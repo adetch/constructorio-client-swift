@@ -2,47 +2,54 @@
 
 * An Xcode project targeting iOS 8.0 or above
 * Objective-C or
-* Swift project using swift 3.0 or later
+* Swift project using Swift 3.0 or later
 * CocoaPods 1.0.0 or later
-* A constructor.io account
+* A Constructor.io account
 
-## 1a. Import using CocoaPods
-First make sure you have CocoaPods installed. If not, you can follow the installation guide from https://guides.cocoapods.org/using/getting-started.html.
-Next step is to create an empty text file in your project’s root directory called ‘Podfile’. Add the following lines to the file:
+## 1. Install
 
-```use_frameworks!
-target ‘YOUR_TARGET_NAME’ do
-pod ‘constructor.io'
+### CocoaPods
+If you don't yet have CocoaPods installed, install it [here](https://guides.cocoapods.org/using/getting-started.html).
+
+Next, create an empty text file in your project's root directory called 'Podfile'. Add the following lines to the file:
+
+```swift
+use_frameworks!
+target 'YOUR_TARGET_NAME' do
+pod 'constructor.io'
 end
 ```
-Open the terminal and make sure you’re located in the project root(where your Podfile is located) and type
-```pod install```
+Open the terminal and make sure you're located in the project root (where your Podfile is located) and type
+`pod install`
 
-That’s it! Make sure to open the ```.xcworkspace``` file instead of the ```.xcodeproj``` you may have been using so far.
+That's it! Make sure to open the ```.xcworkspace``` file instead of the ```.xcodeproj``` you may have been using so far.
 
-## 1b. Import using Carthage
-Framework can be also installed via Carthage. First, make sure you have [Carthage installed](https://github.com/Carthage/Carthage#installing-carthage). Then, create an empty text file called ‘Cartfile’ in your project root directory. Now, add the following lines:
+### Carthage
+You can also install the framework via Carthage. If you don't yet have CocoaPods installed, install it [here](https://github.com/Carthage/Carthage#installing-carthage).
 
-```github “constructor.io/releases”```
+Then, create an empty text file called 'Cartfile' in your project root directory. Now, add the following lines:
 
-Run ```carthage update```
+`github "constructor.io/releases”`
+
+Run `carthage update`
 
 Drag the ConstructorIO.framework from Carthage/Checkouts/releases-ios into your project and link it with your application target.
 
 TODO finish
 
-## 1c. Manual import
+### Manual
+
 * Go to our releases repository and get the latest distribution of ConstructorIO.framework. 
 * Drag the framework into the project and link it with your application target.
-That’s it! You are now ready to use constructor.io autocomplete framework.
+That's it! You are now ready to use the Constructor.io Autocomplete framework.
 
-## 2. Get the autocomplete key from constructor.io dashboard
+## 2. Retrieve the autocomplete key from your Constructor.io dashboard
 TODO
 
-## 3. Implement the autocomplete features in your app
-```
+## 3. Implement the following methods in your app:
+```swift
 // Instantiate the autocomplete controller
-let viewController = CIOAutocompleteViewController(autocompleteKey: “YOUR AUTOCOMPLETE KEY")
+let viewController = CIOAutocompleteViewController(autocompleteKey: "YOUR AUTOCOMPLETE KEY")
 
 // set the delegate in order to react to various events
 viewController.delegate = self
@@ -57,26 +64,29 @@ self.navigationController.pushViewController(viewController, animated: true)
 You should now see your autocomplete view controller.
 
 ## Reacting to user events
-```CIOAutocompleteDelegate``` contains methods that notify you about autocomplete events. We’ll touch on a couple of them:
+`CIOAutocompleteDelegate` contains methods that notify you about autocomplete events. We'll touch on a couple of them:
 
-```optional func autocompleteControllerDidLoad(controller: CIOAutocompleteViewController)```
+```swift
+optional func autocompleteControllerDidLoad(controller: CIOAutocompleteViewController)```
 
-* This method is called when the view controller’s view is loaded, giving you a chance to call analytics services or execute any background task.
+* This method is called when the view controller's view is loaded, giving you a chance to call analytics services or execute any background task.
 
-```optional func autocompleteController(controller: CIOAutocompleteViewController, didSelectResult result: CIOResult)```
+```swift
+optional func autocompleteController(controller: CIOAutocompleteViewController, didSelectResult result: CIOResult)```
 
-* Called when user taps a result in the table view. The view controller will not dismiss automatically. It’s entirely up to you whether you’d like to push another controller to the stack or dismiss the existing one and do something with the result.
+* Called when user taps a result in the table view. The view controller will not dismiss automatically. It's entirely up to you whether you'd like to push another controller to the stack or dismiss the existing one and do something with the result.
 
-```optional func autocompleteController(controller: CIOAutocompleteViewController, didPerformSearch searchTerm: String)```
+```swift
+optional func autocompleteController(controller: CIOAutocompleteViewController, didPerformSearch searchTerm: String)```
 
 * This method is called when the search query is sent to the server, again giving you a chance to do any necessary background work.
 
 ## Customizing the UI
-```CIOAutocompleteDataSource``` protocol contains various methods allowing you to customize the look and feel of the autocomplete view.
+`CIOAutocompleteDataSource` protocol contains various methods allowing you to customize the look and feel of the autocomplete view.
 
 ## Using the default UI
 We provide the default UITableViewCells in which the results will be shown. You can customize these cells by implementing the following methods:
-```
+```swift
 func styleResultLabel(label: UILabel, in autocompleteController: CIOAutocompleteViewController){
 	label.backgrounColor = UIColor.clear
 }
@@ -96,21 +106,21 @@ func fontBold(in autocompleteController: CIOAutocompleteViewController) -> UIFon
 
 ## Using the custom UI
 If you decide to use a fully custom cell, you can either pass the UINib using
-```
+```swift
 func customCellNib(in autocompleteController: CIOAutocompleteViewController) -> UINib{
 	return UINib(nibName: "CustomTableViewCell", bundle: nil)
 }
 ```
 
 or the custom cell class, if your cell is instantiated in code
-```
+```swift
 func customCellClass(in autocompleteController: CIOAutocompleteViewController) -> AnyClass{
 	return MyCustomCell.self
 }
 ```
 
-Your custom cells must conform to the ```CIOAutocompleteCell``` protocol and implement the ```setup``` method.
-```
+Your custom cells must conform to the `CIOAutocompleteCell` protocol and implement the `setup` method.
+```swift
 class CustomTableViewCell: UITableViewCell, CIOAutocompleteCell {
 
     @IBOutlet weak var imageViewIcon: UIImageView!
@@ -133,20 +143,20 @@ Our framework will call this method on your cell and pass all the necessary data
 There are a couple of more views that you can fully replace with a custom UIView of your choice.
 ## Background View
 Background view appears behind your search results. You can replace the default framework view by implementing the backgroundView method.
-```
+```swift
 func backgroundView(in autocompleteController: CIOAutocompleteViewController) -> UIView?{
 	return MyCustomBackgroundView()
 }
 ```
 ## Error View
 If an error occurs, error view will be shown displaying the error message. If you decide to use a custom error view, you should implement
-```
+```swift
 func errorView(in autocompleteController: CIOAutocompleteViewController) -> UIView? {
         return UINib(nibName: "CustomErrorView", bundle: nil).instantiate(withOwner: nil, options: nil).first as? UIView
     }
-```    
-Your custom error view must conform to the CIOErrorView protocol and implement the necessary methods
 ```
+Your custom error view must conform to the CIOErrorView protocol and implement the necessary methods
+```swift
 class CustomErrorView: UIView, CIOErrorView {
 
     @IBOutlet weak var labelError: UILabel!
